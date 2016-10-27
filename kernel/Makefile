@@ -12,11 +12,9 @@ all : ${OBJS}
 -include $(DEPS)
 
 %.o: %.c
-	@$(PRINTF) '\nCompiling \033[1m$<\033[0m...'
 	@$(CC) $(CFLAGS) $(INCL) $(WARN) -c -MM -MF $(patsubst %.o,%.d,$@) $<
-	@$(PRINTF) '\n    '
+	@$(PRINTF) ' -- Compiling \033[1m$<\033[0m...\n'
 	$(CC) $(CFLAGS) $(INCL) $(WARN) -c $< -o $@
-	@$(ECHO)
 
 clean:
 	$(RM) -f *.o *.d

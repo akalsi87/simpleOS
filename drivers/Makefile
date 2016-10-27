@@ -13,15 +13,13 @@ all : ${OBJS} ${ASMOBJS}
 -include $(DEPS)
 
 %.o: %.asm
-	@$(PRINTF) 'Assembling \033[1m$<\033[0m...\n    '
+	@$(PRINTF) ' -- Assembling \033[1m$<\033[0m...\n'
 	$(NASM) -f elf32 -o $@ $^
 
 %.o: %.c
-	@$(PRINTF) 'Compiling \033[1m$<\033[0m...\n'
 	@$(CC) $(CFLAGS) $(INCL) $(WARN) -c -MM -MF $(patsubst %.o,%.d,$@) $<
-	@$(PRINTF) '    '
+	@$(PRINTF) ' -- Compiling \033[1m$<\033[0m...\n'
 	$(CC) $(CFLAGS) $(INCL) $(WARN) -c $< -o $@
-	@$(ECHO)
 
 clean:
 	$(RM) -f *.o *.d
