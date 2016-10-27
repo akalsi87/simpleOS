@@ -32,7 +32,8 @@ IMGFILE=simpleOS-$(VER).img
 
 export
 
-.PHONY: emulate
+.PHONY: emulate build-boot build-util build-drivers build-kernel
+.SECONDARY: kernel.elf iso/boot/grub/menu.lst
 
 all : kernel.elf
 
@@ -48,18 +49,23 @@ build-drivers:
 build-kernel:
 	@$(MAKE) -C kernel all
 
-kernel.elf: build-boot build-util build-kernel link.ld
+kernel.elf: build-boot build-util build-drivers build-kernel link.ld
 	$(eval objfiles_all=$$(shell find * | grep '\.o'))
 	$(eval objfiles=$$(filter-out boot/loader.o,$$(objfiles_all)))
+	@$(PRINTF) '\nLinking \033[1m$@\033[0m...\n    '
 	$(LD) $(LDFLAGS) -T link.ld boot/loader.o $(objfiles) -o $@
 
-prepare-grub: kernel.elf
+iso/boot/grub/menu.lst: kernel.elf
+	@$(PRINTF) '\nPreparing \033[1miso/grub/\033[0m...\n    '
 	@$(MKDIR) -p iso/boot/grub
 	$(CP) stage2_eltorito iso/boot/grub
+	@$(PRINTF) '    '
 	$(CP) $^ iso/boot
+	@$(PRINTF) '    '
 	$(PRINTF) "default=0\ntimeout=0\n\ntitle simpleOS\nkernel /boot/$^" > iso/boot/grub/menu.lst
 
-$(IMGFILE): prepare-grub
+$(IMGFILE): iso/boot/grub/menu.lst
+	@$(PRINTF) '\nGenerating \033[1m$(IMGFILE)\033[0m...\n    '
 	$(GENISOIMAGE) \
 		-R -b boot/grub/stage2_eltorito \
 		-no-emul-boot -boot-load-size 4 \
@@ -76,4 +82,5 @@ clean:
 	$(RM) $(IMGFILE)
 
 emulate: $(IMGFILE)
+	@$(PRINTF) '\nEmulating \033[1m$<\033[0m...\n    '
 	$(QEMU) -cdrom $(IMGFILE)
