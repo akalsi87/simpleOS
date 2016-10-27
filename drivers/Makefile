@@ -17,7 +17,7 @@ all : ${OBJS} ${ASMOBJS}
 	$(NASM) -f elf32 -o $@ $^
 
 %.o: %.c
-	@$(ECHO) 'Compiling \033[1m$<\033[0m...'
+	@$(PRINTF) 'Compiling \033[1m$<\033[0m...\n'
 	@$(CC) $(CFLAGS) $(INCL) $(WARN) -c -MM -MF $(patsubst %.o,%.d,$@) $<
 	@$(PRINTF) '    '
 	$(CC) $(CFLAGS) $(INCL) $(WARN) -c $< -o $@
