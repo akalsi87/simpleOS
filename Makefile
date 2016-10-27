@@ -26,6 +26,8 @@ CP ?= cp
 GENISOIMAGE ?= genisoimage
 QEMU ?= qemu-system-i386
 
+MAKE = make --no-print-directory
+
 VER=0.0.1
 
 IMGFILE=simpleOS-$(VER).img
@@ -52,7 +54,7 @@ build-kernel:
 kernel.elf: build-boot build-util build-drivers build-kernel link.ld
 	$(eval objfiles_all=$$(shell find * | grep '\.o'))
 	$(eval objfiles=$$(filter-out boot/loader.o,$$(objfiles_all)))
-	@$(PRINTF) ' -- Linking \033[1m$@\033[0m...\n'
+	@$(PRINTF) ' -- Linking    \033[1m$@\033[0m...\n'
 	$(LD) $(LDFLAGS) -T link.ld boot/loader.o $(objfiles) -o $@
 
 iso/boot/grub/menu.lst: kernel.elf

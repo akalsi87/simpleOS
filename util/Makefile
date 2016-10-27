@@ -13,7 +13,7 @@ all : ${OBJS}
 
 %.o: %.c
 	@$(CC) $(CFLAGS) $(INCL) $(WARN) -c -MM -MF $(patsubst %.o,%.d,$@) $<
-	@$(PRINTF) 'Compiling \033[1m$<\033[0m...\n    '
+	@$(PRINTF) 'Compiling  \033[1m$<\033[0m...\n    '
 	$(CC) $(CFLAGS) $(INCL) $(WARN) -c $< -o $@
 
 clean:
