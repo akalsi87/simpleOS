@@ -9,15 +9,12 @@
 NASM ?= nasm
 CC   ?= cc
 LD   ?= ld
-
-OPTS += -O2 -g
-INCL += -I$(shell pwd)
-
-COMMFLAGS += -fno-stack-protector -fno-builtin -nostdinc -nostdlib -m32 -std=c99
-
 GDB = /usr/local/i386elfgcc/bin/i386-elf-gdb
 
-CFLAGS +=   $(INCL) $(COMMFLAGS) $(OPTS)
+OPTS += -O2 -g
+WARN += -Wall -Wextra -Werror
+INCL += -I$(shell pwd)
+CFLAGS += -fno-stack-protector -fno-builtin -nostdinc -nostdlib -nostartfiles -nodefaultlibs -m32 -std=c99 $(OPTS)
 LDFLAGS += -melf_i386
 
 CAT ?= cat
@@ -29,7 +26,7 @@ CP ?= cp
 GENISOIMAGE ?= genisoimage
 QEMU ?= qemu-system-i386
 
-VER=0.1
+VER=0.0.1
 
 IMGFILE=simpleOS-$(VER).img
 
@@ -37,13 +34,24 @@ export
 
 .PHONY: emulate
 
-all : emulate
+all : kernel.elf
 
 build-boot:
 	@$(MAKE) -C boot all
 
-kernel.elf: build-boot link.ld
-	$(LD) $(LDFLAGS) -T link.ld boot/loader.o -o $@
+build-util:
+	@$(MAKE) -C util all
+
+build-drivers:
+	@$(MAKE) -C drivers all
+
+build-kernel:
+	@$(MAKE) -C kernel all
+
+kernel.elf: build-boot build-util build-kernel link.ld
+	$(eval objfiles_all=$$(shell find * | grep '\.o'))
+	$(eval objfiles=$$(filter-out boot/loader.o,$$(objfiles_all)))
+	$(LD) $(LDFLAGS) -T link.ld boot/loader.o $(objfiles) -o $@
 
 prepare-grub: kernel.elf
 	@$(MKDIR) -p iso/boot/grub
@@ -60,6 +68,9 @@ $(IMGFILE): prepare-grub
 
 clean:
 	@$(MAKE) -C boot clean
+	@$(MAKE) -C util clean
+	@$(MAKE) -C drivers clean
+	@$(MAKE) -C kernel clean
 	$(RM) -r iso/
 	$(RM) *.elf
 	$(RM) $(IMGFILE)
