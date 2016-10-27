@@ -1,14 +1,15 @@
 # Makefile for simpleOS/drivers
 
+ASMSRCS = $(wildcard *.asm)
 SRCS = $(wildcard *.c)
 HDRS = $(wildcard *.h)
 
 OBJS = $(SRCS:.c=.o)
+ASMOBJS = $(ASMSRCS:.asm=.o)
 # List of dependencies defined from list of object files
 DEPS := $(OBJS:.o=.d)
 
-all : ${OBJS}
-
+all : ${OBJS} ${ASMOBJS}
 -include $(DEPS)
 
 %.o: %.asm
@@ -21,7 +22,6 @@ all : ${OBJS}
 	@$(PRINTF) '    '
 	$(CC) $(CFLAGS) $(INCL) $(WARN) -c $< -o $@
 	@$(ECHO)
-
 
 clean:
 	$(RM) -f *.o *.d

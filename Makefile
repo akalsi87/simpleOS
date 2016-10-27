@@ -84,3 +84,7 @@ clean:
 emulate: $(IMGFILE)
 	@$(PRINTF) '\nEmulating \033[1m$<\033[0m...\n    '
 	$(QEMU) -cdrom $(IMGFILE)
+
+debug: $(IMGFILE)
+	$(QEMU) -cdrom $(IMGFILE) -s -S &
+	$(GDB) --symbol=kernel.elf -ex 'target remote localhost:1234'
