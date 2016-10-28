@@ -46,7 +46,7 @@ void fbsetpos(u16_t row, u16_t col)
 
 void fbcls()
 {
-    u16_t val = (((u16_t)fb_attr) << 8) | ' ';
+    u16_t val = (((u16_t)0x0F) << 8) | ' ';
     fillmemw(FB_MEM, val, FB_WIDTH*FB_HEIGHT);
 }
 
@@ -74,12 +74,19 @@ void fbwritechar(char_t c)
 {
     if (fb_row >= FB_HEIGHT) {
         copymem(FB_MEM, FB_MEM + FB_WIDTH, (FB_HEIGHT-1)*FB_WIDTH*sizeof(u16_t));
-        u16_t word = (((u16_t)fb_attr) << 8) | ' ';
+        u16_t word = (((u16_t)0x0F) << 8) | ' ';
         fillmemw(FB_MEM+(FB_HEIGHT-1)*FB_WIDTH, word, FB_WIDTH);
         --fb_row;
     }
     u16_t val = (((u16_t)fb_attr) << 8) | c;
     switch (c) {
+        case '\b': {
+            i32_t first_in_row = (fb_col == 0);
+            fb_col = first_in_row ? FB_WIDTH-1 : fb_col-1;
+            fb_row = (first_in_row && fb_row != 0)? fb_row-1 : fb_row;
+            FB_MEM[fb_row*FB_WIDTH + fb_col] = (((u16_t)0x0F) << 8) | ' ';
+            break;
+        }
         case '\n':
             fb_row++;
             fb_col = 0;
