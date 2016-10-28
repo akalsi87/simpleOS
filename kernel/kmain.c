@@ -12,21 +12,25 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
 
 #include "util/assert.h"
 
-void kmain()
+static
+void init()
 {
     fbinit();
     serialinit();
+}
+
+void kmain()
+{
+    init();
+
     fbsetpos(24, 78);
     fbwritestr("hello!\n");
     fbwritestr("world!\n");
 
-    ASSERT(1 == 0);
-    ASSERT_MSG(0, "failed assert!");
-
     while (1) {
-        for (i32_t i = 0; i < 500000; ++i) {
+        for (u32_t i = 0; i < (1 << 20); ++i) {
             // simulate halt
         }
-
+        debugwritemsg("hi serial port...");
     }
 }

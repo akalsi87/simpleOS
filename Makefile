@@ -14,20 +14,20 @@ GDB = /usr/local/i386elfgcc/bin/i386-elf-gdb
 OPTS += -O2 -g
 WARN += -Wall -Wextra -Werror
 INCL += -I$(shell pwd)
-CFLAGS += -fvisibility=hidden -fno-stack-protector -fno-builtin -nostdinc\
-          -nostdlib -nostartfiles -nodefaultlibs -m32 -std=c99 $(OPTS)
+CFLAGS += -fno-stack-protector -fno-builtin -nostdinc -nostdlib \
+          -nostartfiles -nodefaultlibs -m32 -std=c99 $(OPTS)
 LDFLAGS += -melf_i386
 
 CAT ?= cat
 MV  ?= mv
 ECHO ?= echo
 MKDIR ?= mkdir
-PRINTF ?= printf
+PRINTF ?= $(SHELL) -c ""
 CP ?= cp
 GENISOIMAGE ?= genisoimage
 QEMU ?= qemu-system-i386
 
-MAKE = make --no-print-directory
+MAKE = make
 
 VER=0.0.1
 
@@ -62,10 +62,8 @@ iso/boot/grub/menu.lst: kernel.elf
 	@$(PRINTF) ' -- Preparing  \033[1miso/grub/\033[0m...\n'
 	@$(MKDIR) -p iso/boot/grub
 	$(CP) stage2_eltorito iso/boot/grub
-	@$(PRINTF) '    '
 	$(CP) $^ iso/boot
-	@$(PRINTF) '    '
-	$(PRINTF) "default=0\ntimeout=0\n\ntitle simpleOS\nkernel /boot/$^" > iso/boot/grub/menu.lst
+	printf "default=0\ntimeout=0\n\ntitle simpleOS\nkernel /boot/$^" > iso/boot/grub/menu.lst
 
 $(IMGFILE): iso/boot/grub/menu.lst
 	@$(PRINTF) ' -- Generating \033[1m$(IMGFILE)\033[0m...\n'
