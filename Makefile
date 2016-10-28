@@ -1,4 +1,4 @@
-# Makefile for BaseOS
+# Makefile for simpleOS
 
 # for details: https://github.com/cfenollosa/os-tutorial/
 # James Molloy's tutorial: https://web.archive.org/web/20160326060959/http://jamesmolloy.co.uk/tutorial_html/2.-Genesis.html
@@ -14,7 +14,8 @@ GDB = /usr/local/i386elfgcc/bin/i386-elf-gdb
 OPTS += -O2 -g
 WARN += -Wall -Wextra -Werror
 INCL += -I$(shell pwd)
-CFLAGS += -fno-stack-protector -fno-builtin -nostdinc -nostdlib -nostartfiles -nodefaultlibs -m32 -std=c99 $(OPTS)
+CFLAGS += -fvisibility=hidden -fno-stack-protector -fno-builtin -nostdinc\
+          -nostdlib -nostartfiles -nodefaultlibs -m32 -std=c99 $(OPTS)
 LDFLAGS += -melf_i386
 
 CAT ?= cat
@@ -58,7 +59,7 @@ kernel.elf: build-boot build-util build-drivers build-kernel link.ld
 	$(LD) $(LDFLAGS) -T link.ld boot/loader.o $(objfiles) -o $@
 
 iso/boot/grub/menu.lst: kernel.elf
-	@$(PRINTF) ' -- Preparing \033[1miso/grub/\033[0m...\n'
+	@$(PRINTF) ' -- Preparing  \033[1miso/grub/\033[0m...\n'
 	@$(MKDIR) -p iso/boot/grub
 	$(CP) stage2_eltorito iso/boot/grub
 	@$(PRINTF) '    '
@@ -82,10 +83,13 @@ clean:
 	$(RM) -r iso/
 	$(RM) *.elf
 	$(RM) $(IMGFILE)
+	$(RM) *.log
 
 emulate: $(IMGFILE)
-	@$(PRINTF) ' -- Emulating \033[1m$<\033[0m...\n'
-	$(QEMU) -cdrom $(IMGFILE)
+	@$(PRINTF) ' -- Emulating  \033[1m$<\033[0m...\n'
+	touch serial.log
+	$(QEMU) -cdrom $(IMGFILE) -serial file:serial.log &
+	tail -f serial.log
 
 debug: $(IMGFILE)
 	$(QEMU) -cdrom $(IMGFILE) -s -S &

@@ -10,6 +10,7 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
 #include "framebuf.h"
 
 #include "ports.h"
+#include "util/mem.h"
 
 /* The I/O ports */
 #define FB_COMMAND_PORT         0x3D4
@@ -46,9 +47,7 @@ void fbsetpos(u16_t row, u16_t col)
 void fbcls()
 {
     u16_t val = (((u16_t)fb_attr) << 8) | ' ';
-    for (u32_t i = 0; i < FB_HEIGHT*FB_WIDTH; ++i) {
-        FB_MEM[i] = val;
-    }
+    fillmemw(FB_MEM, val, FB_WIDTH*FB_HEIGHT);
 }
 
 void fbinit()
@@ -70,8 +69,15 @@ void fbsetattr(u8_t attr)
     fb_attr = attr;
 }
 
-static void fbwritechar(char_t c)
+static
+void fbwritechar(char_t c)
 {
+    if (fb_row >= FB_HEIGHT) {
+        copymem(FB_MEM, FB_MEM + FB_WIDTH, (FB_HEIGHT-1)*FB_WIDTH*sizeof(u16_t));
+        u16_t word = (((u16_t)fb_attr) << 8) | ' ';
+        fillmemw(FB_MEM+(FB_HEIGHT-1)*FB_WIDTH, word, FB_WIDTH);
+        --fb_row;
+    }
     u16_t val = (((u16_t)fb_attr) << 8) | c;
     switch (c) {
         case '\n':
@@ -83,8 +89,9 @@ static void fbwritechar(char_t c)
         case '\t': {
             u16_t i = 0;
             val = (val & 0x00) | (u8_t)(' ');
-            while (i < 4 && fb_col < FB_WIDTH) {
+            while ((i < 4) && (fb_col < FB_WIDTH)) {
                 FB_MEM[fb_row*FB_WIDTH + fb_col++] = val;
+                ++i;
             }
             break;
         }
@@ -95,10 +102,6 @@ static void fbwritechar(char_t c)
     if (fb_col >= FB_WIDTH) {
         fb_col = 0;
         ++fb_row;
-    }
-    if (fb_row >= FB_HEIGHT) {
-        --fb_row;
-        /* copy chars */
     }
 }
 

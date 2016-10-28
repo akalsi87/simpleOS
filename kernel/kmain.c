@@ -8,14 +8,25 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
  */
 
 #include "drivers/framebuf.h"
+#include "drivers/serial.h"
+
+#include "util/assert.h"
 
 void kmain()
 {
     fbinit();
-    fbsetpos(2, 0);
+    serialinit();
+    fbsetpos(24, 78);
     fbwritestr("hello!\n");
     fbwritestr("world!\n");
-    for (;;) {
-        // simulate halt
+
+    ASSERT(1 == 0);
+    ASSERT_MSG(0, "failed assert!");
+
+    while (1) {
+        for (i32_t i = 0; i < 500000; ++i) {
+            // simulate halt
+        }
+
     }
 }
