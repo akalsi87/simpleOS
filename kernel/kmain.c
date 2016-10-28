@@ -24,7 +24,7 @@ void kmain()
     init();
 
     fbsetpos(24, 78);
-    fbwritestr("hell\bo!\n");
+    fbwritestr("hel\blo!\n");
     fbwritestr("world!\n");
 
     while (1) {

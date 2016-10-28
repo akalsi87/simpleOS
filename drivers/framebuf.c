@@ -72,6 +72,10 @@ void fbsetattr(u8_t attr)
 static
 void fbwritechar(char_t c)
 {
+    if (fb_col >= FB_WIDTH) {
+        fb_col = 0;
+        ++fb_row;
+    }
     if (fb_row >= FB_HEIGHT) {
         copymem(FB_MEM, FB_MEM + FB_WIDTH, (FB_HEIGHT-1)*FB_WIDTH*sizeof(u16_t));
         u16_t word = (((u16_t)0x0F) << 8) | ' ';
@@ -105,10 +109,6 @@ void fbwritechar(char_t c)
         default:
             FB_MEM[fb_row*FB_WIDTH + fb_col++] = val;
             break;
-    }
-    if (fb_col >= FB_WIDTH) {
-        fb_col = 0;
-        ++fb_row;
     }
 }
 
