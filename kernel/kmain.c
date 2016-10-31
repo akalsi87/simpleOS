@@ -31,7 +31,7 @@ void kmain()
 
     while (1) {
         for (u32_t i = 0; i < (1 << 20); ++i) {
-            // simulate halt
+            // simulate delay
         }
         debugwritemsg("hi serial port...");
     }
