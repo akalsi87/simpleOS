@@ -10,7 +10,7 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
 #ifndef SIMPLEOS_DRIVERS_SERIAL_H
 #define SIMPLEOS_DRIVERS_SERIAL_H
 
-#include "util/types.h"
+#include "cpu/types.h"
 
  /* The I/O ports */
 

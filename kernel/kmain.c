@@ -7,6 +7,7 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
  * \date Oct 26, 2016
  */
 
+#include "cpu/gdt.h"
 #include "drivers/framebuf.h"
 #include "drivers/serial.h"
 
@@ -15,6 +16,7 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
 static
 void init()
 {
+    gdtinit();
     fbinit();
     serialinit();
 }

@@ -7,8 +7,8 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
  * \date Oct 26, 2016
  */
 
-#ifndef SIMPLEOS_UTIL_TYPES_H
-#define SIMPLEOS_UTIL_TYPES_H
+#ifndef SIMPLEOS_CPU_TYPES_H
+#define SIMPLEOS_CPU_TYPES_H
 
 typedef char                    char_t;
 typedef signed char             i8_t;
@@ -26,4 +26,4 @@ typedef unsigned long long int  u64_t;
 typedef u32_t                   sz_t;
 typedef void*                   voidp_t;
 
-#endif/*SIMPLEOS_UTIL_TYPES_H*/
+#endif/*SIMPLEOS_CPU_TYPES_H*/

@@ -10,7 +10,7 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
 #ifndef SIMPLEOS_UTIL_MEM_H
 #define SIMPLEOS_UTIL_MEM_H
 
-#include "types.h"
+#include "cpu/types.h"
 
 void copymem(void* dest, void const* src, sz_t n);
 

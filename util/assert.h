@@ -10,7 +10,7 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
 #ifndef SIMPLEOS_ASSERT_H
 #define SIMPLEOS_ASSERT_H
 
-#include "util/types.h"
+#include "cpu/types.h"
 
 #define __STR_(x) #x
 #define __STR(x) __STR_(x)

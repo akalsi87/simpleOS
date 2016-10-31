@@ -43,6 +43,9 @@ all : kernel.elf
 build-boot:
 	@$(MAKE) -C boot all
 
+build-cpu:
+	@$(MAKE) -C cpu all
+
 build-util:
 	@$(MAKE) -C util all
 
@@ -52,7 +55,7 @@ build-drivers:
 build-kernel:
 	@$(MAKE) -C kernel all
 
-kernel.elf: build-boot build-util build-drivers build-kernel link.ld
+kernel.elf: build-boot build-cpu build-util build-drivers build-kernel link.ld
 	$(eval objfiles_all=$$(shell find * | grep '\.o'))
 	$(eval objfiles=$$(filter-out boot/loader.o,$$(objfiles_all)))
 	@$(PRINTF) ' -- Linking    \033[1m$@\033[0m...\n'
@@ -75,6 +78,7 @@ $(IMGFILE): iso/boot/grub/menu.lst
 
 clean:
 	@$(MAKE) -C boot clean
+	@$(MAKE) -C cpu clean
 	@$(MAKE) -C util clean
 	@$(MAKE) -C drivers clean
 	@$(MAKE) -C kernel clean

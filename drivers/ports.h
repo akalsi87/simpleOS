@@ -10,7 +10,7 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
 #ifndef SIMPLEOS_DRIVERS_PORTS_H
 #define SIMPLEOS_DRIVERS_PORTS_H
 
-#include "util/types.h"
+#include "cpu/types.h"
 
 u8_t  portreadb(u16_t port);
 
