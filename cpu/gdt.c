@@ -8,6 +8,9 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
  */
 
 #include "gdt.h"
+
+#include "types.h"
+
 #include "util/assert.h"
 
 // This structure contains the value of one GDT entry.
