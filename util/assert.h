@@ -24,6 +24,6 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
 #define STATIC_ASSERT(e, m) \
     char __CONCAT(m, _assert)[e ? 1 : -1]
 
-int panic(char_t const* expr, char_t const* str);
+i32_t panic(char_t const* expr, char_t const* str);
 
 #endif/*SIMPLEOS_ASSERT_H*/

@@ -20,7 +20,7 @@ STATIC_ASSERT(sizeof(u32_t)  == 4, incorrect_type_size_u32_t);
 STATIC_ASSERT(sizeof(i64_t)  == 8, incorrect_type_size_i64_t);
 STATIC_ASSERT(sizeof(u64_t)  == 8, incorrect_type_size_u64_t);
 
-int panic(char_t const* e, char_t const* m)
+i32_t panic(char_t const* e, char_t const* m)
 {
     debugwritestr("[PANIC] ");
     debugwritestr(e);

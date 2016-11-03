@@ -21,9 +21,10 @@ irq irqhandler(u8_t n, irq h)
     return t;
 }
 
-void irq_handler(registers r)
+void irq_handler(const registers* r)
 {
-    if (r.int_no >= 40) {
+    u32_t int_no = r->int_no;
+    if (int_no >= 40) {
         // alert slave
         portwriteb(0xA0, 0x20);
     }
@@ -37,7 +38,7 @@ void irq_handler(registers r)
     // debugwritestr(" called!\n");
 
     {// run handler
-        irq h = HANDLERS[r.int_no];
+        irq h = HANDLERS[int_no];
         if (h) {
             h(r);
         }

@@ -216,13 +216,13 @@ char_t * EXCEPTIONS[] = {
     "Reserved"
 };
 
-void isr_handler(registers r)
+void isr_handler(const registers* r)
 {
     debugwritestr("[ISR ");
     char_t dec[DEC_PRINT_CHARS_U32];
-    bufprintdec(dec, r.int_no);
+    bufprintdec(dec, r->int_no);
     debugwritestr(dec);
     debugwritestr("] ");
-    debugwritestr(EXCEPTIONS[r.int_no]);
+    debugwritestr(EXCEPTIONS[r->int_no]);
     debugwritestr("\n");
 }

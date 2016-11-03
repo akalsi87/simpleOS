@@ -20,7 +20,7 @@ typedef struct
    u32_t eip, cs, eflags, useresp, ss;           // Pushed by the processor automatically.
 } registers;
 
-typedef void (*irq)(registers);
+typedef void (*irq)(const registers*);
 
 #define IRQ0 32
 #define IRQ1 33

@@ -17,7 +17,7 @@ static u32_t count = 0;
 static u32_t frequency = 0;
 
 static
-void timercbk(registers r)
+void timercbk(const registers* r)
 {
     (void)r;
     char_t tick[DEC_PRINT_CHARS_U32];
