@@ -11,7 +11,7 @@ CC   ?= cc
 LD   ?= ld
 GDB = /usr/local/i386elfgcc/bin/i386-elf-gdb
 
-OPTS += -O3 -g
+OPTS += -O2 -g
 WARN += -Wall -Wextra -Werror
 INCL += -I.
 CFLAGS += -fno-stack-protector -fno-builtin -nostdinc -nostdlib \
