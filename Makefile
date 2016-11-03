@@ -11,7 +11,7 @@ CC   ?= cc
 LD   ?= ld
 GDB = /usr/local/i386elfgcc/bin/i386-elf-gdb
 
-OPTS += -O2 -g
+OPTS += -O3 -g
 WARN += -Wall -Wextra -Werror
 INCL += -I$(shell pwd)
 CFLAGS += -fno-stack-protector -fno-builtin -nostdinc -nostdlib \
@@ -34,10 +34,10 @@ VER=0.0.1
 
 IMGFILE=simpleOS-$(VER).img
 
-SRC_DIRS := cpu util boot drivers kernel
+SRC_DIRS := $(shell ls -d */)
 
-C_SRC_FILES := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
-ASM_SRC_FILES := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.asm))
+C_SRC_FILES := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)*.c))
+ASM_SRC_FILES := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)*.asm))
 
 C_OBJ_FILES := $(C_SRC_FILES:.c=.o)
 C_DEP_FILES := $(C_SRC_FILES:.c=.d)
