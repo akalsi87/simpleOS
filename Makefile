@@ -32,12 +32,16 @@ MAKE = make
 
 VER=0.0.1
 
-IMGFILE=simpleOS-$(VER).iso
+
+BUILD_DIR := build
+OBJ_DIR := $(BUILD_DIR)/obj
+KERNEL_ELF := $(BUILD_DIR)/kernel.elf
+IMGFILE=$(BUILD_DIR)/simpleOS-$(VER).iso
 
 SRC_DIRS := $(shell ls -d */)
 
-C_SRC_FILES := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)*.c))
-ASM_SRC_FILES := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)*.asm))
+C_SRC_FILES := $(foreach dir,$(SRC_DIRS),$(addprefix $(OBJ_DIR)/,$(wildcard $(dir)*.c)))
+ASM_SRC_FILES := $(foreach dir,$(SRC_DIRS),$(addprefix $(OBJ_DIR)/,$(wildcard $(dir)*.asm)))
 
 C_OBJ_FILES := $(C_SRC_FILES:.c=.o)
 C_DEP_FILES := $(C_SRC_FILES:.c=.d)
@@ -46,62 +50,59 @@ ASM_OBJ_FILES := $(ASM_SRC_FILES:.asm=.o)
 OBJS := $(C_OBJ_FILES) $(ASM_OBJ_FILES)
 
 .PHONY: emulate
-.SECONDARY: kernel.elf iso/boot/grub/menu.lst
+.SECONDARY: $(KERNEL_ELF) $(BUILD_DIR)/iso/boot/grub/menu.lst
 
-all : kernel.elf
+all : $(KERNEL_ELF)
 
 -include $(C_DEP_FILES)
 
-%.o: %.asm
+$(OBJ_DIR)/%.o: %.asm
+	@$(MKDIR) -p $(shell dirname $@)
 	@$(PRINTF) 'Assembling \033[1m$<\033[0m...\n'
 	$(NASM) -f elf32 -o $@ $^
 
-%.o: %.c
+$(OBJ_DIR)/%.o: %.c
+	@$(MKDIR) -p $(shell dirname $@)
 	@$(CC) $(CFLAGS) $(INCL) $(WARN) -c -MM -MF $(patsubst %.o,%.d,$@) $<
 	@$(PRINTF) 'Compiling  \033[1m$<\033[0m...\n'
 	$(CC) $(CFLAGS) $(INCL) $(WARN) -c $< -o $@
 
-kernel.elf: ${OBJS}
+$(KERNEL_ELF): ${OBJS}
 	@$(PRINTF) 'Linking    \033[1m$@\033[0m...\n'
-	$(LD) $(LDFLAGS) -T link.ld boot/loader.o $(filter-out boot/loader.o,$(OBJS)) -o $@
+	$(LD) $(LDFLAGS) -T link.ld $(OBJ_DIR)/boot/loader.o $(filter-out $(OBJ_DIR)/boot/loader.o,$(OBJS)) -o $@
 
-iso/boot/grub/menu.lst: kernel.elf
+$(BUILD_DIR)/iso/boot/grub/menu.lst: $(KERNEL_ELF)
 	@$(PRINTF) 'Preparing  \033[1miso/grub/\033[0m...\n'
-	@$(MKDIR) -p iso/boot/grub
-	$(CP) boot/stage2_eltorito iso/boot/grub
-	$(CP) $^ iso/boot
-	$(PRINTF) "default=0\ntimeout=0\n\ntitle simpleOS\nkernel /boot/$^" > iso/boot/grub/menu.lst
+	@$(MKDIR) -p $(shell dirname $@)
+	$(CP) boot/stage2_eltorito $(shell dirname $@)
+	$(CP) $^ $(BUILD_DIR)/iso/boot
+	$(PRINTF) "default=0\ntimeout=0\n\ntitle simpleOS\nkernel /boot/$(shell basename $^)" > $(shell dirname $@)/menu.lst
 
 # $(IMGFILE): iso/boot/grub/menu.lst
 # 	@$(PRINTF) 'Generating \033[1m$(IMGFILE)\033[0m...\n'
 # 	$(GENISOIMAGE) \
-# 		-R -b boot/grub/stage2_eltorito \
+# 		-R -b $(BUILD_DIR)/boot/grub/stage2_eltorito \
 # 		-no-emul-boot -boot-load-size 4 \
 # 		-A simpleOS -input-charset utf8 \
 # 		-quiet -boot-info-table -o $@ iso
 
-$(IMGFILE): iso/boot/grub/menu.lst
+$(IMGFILE): $(BUILD_DIR)/iso/boot/grub/menu.lst
 	@$(PRINTF) 'Generating \033[1m$(IMGFILE)\033[0m...\n'
-	$(GENISOIMAGE) \
+	cd $(BUILD_DIR) && $(GENISOIMAGE) \
 		-R -b boot/grub/stage2_eltorito \
 		-no-emul-boot -boot-load-size 4 \
-		-quiet -boot-info-table -o $@ iso
+		-quiet -boot-info-table -o $(shell basename $@) iso
 
 image: $(IMGFILE)
 
 clean:
-	$(RM) $(OBJS)
-	$(RM) $(C_DEP_FILES)
-	$(RM) -r iso/
-	$(RM) *.elf
-	$(RM) $(IMGFILE)
-	$(RM) *.log
+	$(RM) -r $(BUILD_DIR)
 
 emulate: $(IMGFILE)
 	@$(PRINTF) 'Emulating  \033[1m$<\033[0m...\n'
-	$(PRINTF) "" > serial.log
-	$(QEMU) -cdrom $(IMGFILE) -serial file:serial.log &
-	tail -f serial.log
+	$(PRINTF) "" > $(BUILD_DIR)/serial.log
+	$(QEMU) -cdrom $(IMGFILE) -serial file:$(BUILD_DIR)/serial.log &
+	tail -f $(BUILD_DIR)/serial.log
 
 debug: $(IMGFILE)
 	$(QEMU) -cdrom $(IMGFILE) -s -S &
