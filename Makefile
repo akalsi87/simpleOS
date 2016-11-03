@@ -13,7 +13,7 @@ GDB = /usr/local/i386elfgcc/bin/i386-elf-gdb
 
 OPTS += -O3 -g
 WARN += -Wall -Wextra -Werror
-INCL += -I$(shell pwd)
+INCL += -I.
 CFLAGS += -fno-stack-protector -fno-builtin -nostdinc -nostdlib \
           -nostartfiles -nodefaultlibs -m32 -std=c99 $(OPTS)
 LDFLAGS += -melf_i386
@@ -53,27 +53,27 @@ all : kernel.elf
 -include $(C_DEP_FILES)
 
 %.o: %.asm
-	@$(PRINTF) ' -- Assembling \033[1m$<\033[0m...\n'
+	@$(PRINTF) 'Assembling \033[1m$<\033[0m...\n'
 	$(NASM) -f elf32 -o $@ $^
 
 %.o: %.c
 	@$(CC) $(CFLAGS) $(INCL) $(WARN) -c -MM -MF $(patsubst %.o,%.d,$@) $<
-	@$(PRINTF) ' -- Compiling  \033[1m$<\033[0m...\n'
+	@$(PRINTF) 'Compiling  \033[1m$<\033[0m...\n'
 	$(CC) $(CFLAGS) $(INCL) $(WARN) -c $< -o $@
 
 kernel.elf: ${OBJS}
-	@$(PRINTF) ' -- Linking    \033[1m$@\033[0m...\n'
+	@$(PRINTF) 'Linking    \033[1m$@\033[0m...\n'
 	$(LD) $(LDFLAGS) -T link.ld $(OBJS) -o $@
 
 iso/boot/grub/menu.lst: kernel.elf
-	@$(PRINTF) ' -- Preparing  \033[1miso/grub/\033[0m...\n'
+	@$(PRINTF) 'Preparing  \033[1miso/grub/\033[0m...\n'
 	@$(MKDIR) -p iso/boot/grub
-	$(CP) stage2_eltorito iso/boot/grub
+	$(CP) boot/stage2_eltorito iso/boot/grub
 	$(CP) $^ iso/boot
 	$(PRINTF) "default=0\ntimeout=0\n\ntitle simpleOS\nkernel /boot/$^" > iso/boot/grub/menu.lst
 
 $(IMGFILE): iso/boot/grub/menu.lst
-	@$(PRINTF) ' -- Generating \033[1m$(IMGFILE)\033[0m...\n'
+	@$(PRINTF) 'Generating \033[1m$(IMGFILE)\033[0m...\n'
 	$(GENISOIMAGE) \
 		-R -b boot/grub/stage2_eltorito \
 		-no-emul-boot -boot-load-size 4 \
@@ -89,7 +89,7 @@ clean:
 	$(RM) *.log
 
 emulate: $(IMGFILE)
-	@$(PRINTF) ' -- Emulating  \033[1m$<\033[0m...\n'
+	@$(PRINTF) 'Emulating  \033[1m$<\033[0m...\n'
 	touch serial.log
 	$(QEMU) -cdrom $(IMGFILE) -serial file:serial.log &
 	tail -f serial.log
