@@ -22,12 +22,8 @@ CAT ?= cat
 MV  ?= mv
 ECHO ?= echo
 MKDIR ?= mkdir
-
-#PRINTF ?= $(SHELL) -c ""
 PRINTF ?= printf
-
 RM ?= rm -f
-
 CP ?= cp
 GENISOIMAGE ?= genisoimage
 QEMU ?= qemu-system-i386
@@ -74,7 +70,7 @@ iso/boot/grub/menu.lst: kernel.elf
 	@$(MKDIR) -p iso/boot/grub
 	$(CP) stage2_eltorito iso/boot/grub
 	$(CP) $^ iso/boot
-	printf "default=0\ntimeout=0\n\ntitle simpleOS\nkernel /boot/$^" > iso/boot/grub/menu.lst
+	$(PRINTF) "default=0\ntimeout=0\n\ntitle simpleOS\nkernel /boot/$^" > iso/boot/grub/menu.lst
 
 $(IMGFILE): iso/boot/grub/menu.lst
 	@$(PRINTF) ' -- Generating \033[1m$(IMGFILE)\033[0m...\n'
