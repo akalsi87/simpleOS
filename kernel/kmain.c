@@ -18,7 +18,7 @@ static
 void init()
 {
     gdtinit();
-    //idtinit();
+    idtinit();
     fbinit();
     serialinit();
 }
@@ -31,23 +31,13 @@ void kmain()
     fbwritestr("hel\blo!\n");
     fbwritestr("world!\n");
 
-    //__asm volatile ("int $0x3");
-    //__asm volatile ("int $0x4");
+    __asm volatile ("int $0x3");
+    __asm volatile ("int $0x4");
 
     while (1) {
-        //for (u32_t i = 0; i < (1 << 20); ++i) {
-        for (u32_t i = 0; i < 400; ++i) {
-            // simulate delay
-            char_t dec[DEC_PRINT_CHARS_U32];
-            char_t hex[HEX_PRINT_CHARS];
-            bufprintdec(dec, i);
-            bufprinthex(hex, i);
-            debugwritestr("[DEBUG] ");
-            debugwritestr(dec);
-            debugwritestr(" => ");
-            debugwritestr(hex);
-            debugwritestr("\n");
+        for (u32_t i = 0; i < (1 << 20); ++i) {
+            // do nothing, simulate delay
         }
-        debugwritemsg("hi serial port...");
+        fbwritestr("hi serial port...");
     }
 }

@@ -63,7 +63,7 @@ all : kernel.elf
 
 kernel.elf: ${OBJS}
 	@$(PRINTF) 'Linking    \033[1m$@\033[0m...\n'
-	$(LD) $(LDFLAGS) -T link.ld $(OBJS) -o $@
+	$(LD) $(LDFLAGS) -T link.ld boot/loader.o $(filter-out boot/loader.o,$(OBJS)) -o $@
 
 iso/boot/grub/menu.lst: kernel.elf
 	@$(PRINTF) 'Preparing  \033[1miso/grub/\033[0m...\n'
@@ -79,6 +79,8 @@ $(IMGFILE): iso/boot/grub/menu.lst
 		-no-emul-boot -boot-load-size 4 \
 		-A simpleOS -input-charset utf8 \
 		-quiet -boot-info-table -o $@ iso
+
+image: $(IMGFILE)
 
 clean:
 	$(RM) $(OBJS)
