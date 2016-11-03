@@ -92,7 +92,7 @@ clean:
 
 emulate: $(IMGFILE)
 	@$(PRINTF) 'Emulating  \033[1m$<\033[0m...\n'
-	touch serial.log
+	$(PRINTF) "" > serial.log
 	$(QEMU) -cdrom $(IMGFILE) -serial file:serial.log &
 	tail -f serial.log
 
