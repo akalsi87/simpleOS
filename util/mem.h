@@ -22,4 +22,6 @@ i32_t mem_compare(void const* a, void const* b, sz_t n);
 
 sz_t mem_first_zero_byte(void const* m);
 
+i32_t str_compare(char_t const* a, char_t const* b);
+
 #endif/*SIMPLEOS_UTIL_MEM_H*/

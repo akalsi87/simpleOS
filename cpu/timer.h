@@ -14,4 +14,8 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
 
 void timer_init(u32_t freq);
 
+u32_t timer_get_freq();
+
+u32_t timer_get_tick();
+
 #endif/*SIMPLEOS_CPU_TIMER_H*/

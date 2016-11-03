@@ -11,6 +11,7 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
 #include "isr.h"
 #include "drivers/ports.h"
 #include "drivers/serial.h"
+#include "util/assert.h"
 #include "util/print.h"
 
 static u32_t count = 0;
@@ -20,15 +21,27 @@ static
 void timer_cbk(registers_t const* r)
 {
     (void)r;
-    char_t tick[DEC_PRINT_CHARS_U32];
     ++count;
-    dbg_write_str("[TIMER] ");
-    buf_print_dec_32(tick, count);
-    dbg_write_str(tick);
-    dbg_write_str(" @ ");
-    buf_print_dec_32(tick, frequency);
-    dbg_write_str(tick);
-    dbg_write_str("Hz\n");
+    {// if printing
+//    	char_t tick[DEC_PRINT_CHARS_U32];
+//		dbg_write_str("[TIMER] ");
+//		buf_print_dec_32(tick, count);
+//		dbg_write_str(tick);
+//		dbg_write_str(" @ ");
+//		buf_print_dec_32(tick, frequency);
+//		dbg_write_str(tick);
+//		dbg_write_str("Hz\n");
+    }
+}
+
+u32_t timer_get_freq()
+{
+	return frequency;
+}
+
+u32_t timer_get_tick()
+{
+	return count;
 }
 
 void timer_init(u32_t freq)
@@ -40,6 +53,7 @@ void timer_init(u32_t freq)
     // (1193180 Hz) by, to get our required frequency. Important to note is
     // that the divisor must be small enough to fit into 16-bits.
     u32_t divisor = 1193180 / frequency;
+    ASSERT(divisor <= 0xFFFF);
 
     // set frequency command
     port_write_byte(0x43, 0x36);

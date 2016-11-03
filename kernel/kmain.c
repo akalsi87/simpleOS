@@ -15,8 +15,9 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
 #include "drivers/serial.h"
 #include "util/print.h"
 #include "util/assert.h"
+#include "util/perf.h"
 
-#define TIMER_FREQ 50 /*Hz*/
+#define TIMER_FREQ 16384 /*Hz*/
 
 static
 void init()
@@ -33,16 +34,15 @@ void kmain()
 {
     init();
 
-    fb_set_pos(24, 78);
-    fb_write_str("hel\blo!\n");
-    fb_write_str("world!\n");
+    fb_write_str("hello!, world!\n");
 
 //    __asm volatile ("int $0x3");
 //    __asm volatile ("int $0x4");
-
     while (1) {
+    	PERF_TIC(while_loop);
         for (u32_t i = 0; i < (1 << 20); ++i) {
             // do nothing, simulate delay
         }
+        PERF_TOC(while_loop);
     }
 }
