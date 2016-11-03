@@ -11,9 +11,9 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
 #include "isr.h" // for registers
 #include "types.h"
 #include "util/assert.h"
+#include "util/debug.h"
 #include "util/print.h"
 #include "drivers/ports.h"
-#include "drivers/serial.h"
 
 // ISRs
 extern void isr0();

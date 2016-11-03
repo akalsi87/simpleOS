@@ -27,7 +27,4 @@ void serial_cfg_port(u16_t com, u16_t divisor);
 
 void serial_write(u16_t com, u8_t const* b, sz_t n);
 
-void dbg_write_str(char_t const* str);
-void dbg_write_msg(char_t const* str);
-
 #endif/*SIMPLEOS_DRIVERS_SERIAL_H*/

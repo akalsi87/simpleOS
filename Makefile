@@ -32,7 +32,7 @@ MAKE = make
 
 VER=0.0.1
 
-IMGFILE=simpleOS-$(VER).img
+IMGFILE=simpleOS-$(VER).iso
 
 SRC_DIRS := $(shell ls -d */)
 
@@ -72,12 +72,19 @@ iso/boot/grub/menu.lst: kernel.elf
 	$(CP) $^ iso/boot
 	$(PRINTF) "default=0\ntimeout=0\n\ntitle simpleOS\nkernel /boot/$^" > iso/boot/grub/menu.lst
 
+# $(IMGFILE): iso/boot/grub/menu.lst
+# 	@$(PRINTF) 'Generating \033[1m$(IMGFILE)\033[0m...\n'
+# 	$(GENISOIMAGE) \
+# 		-R -b boot/grub/stage2_eltorito \
+# 		-no-emul-boot -boot-load-size 4 \
+# 		-A simpleOS -input-charset utf8 \
+# 		-quiet -boot-info-table -o $@ iso
+
 $(IMGFILE): iso/boot/grub/menu.lst
 	@$(PRINTF) 'Generating \033[1m$(IMGFILE)\033[0m...\n'
 	$(GENISOIMAGE) \
 		-R -b boot/grub/stage2_eltorito \
 		-no-emul-boot -boot-load-size 4 \
-		-A simpleOS -input-charset utf8 \
 		-quiet -boot-info-table -o $@ iso
 
 image: $(IMGFILE)

@@ -9,10 +9,11 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
 
 #include "perf.h"
 #include "assert.h"
+#include "debug.h"
 #include "mem.h"
 #include "print.h"
 #include "cpu/timer.h"
-#include "drivers/serial.h"
+
 
 static char_t const* last_tag = 0;
 static u32_t last_tick = 0;

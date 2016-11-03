@@ -125,15 +125,3 @@ void serial_init()
 {
     serial_cfg_port(SERIAL_COM1_BASE, 1);
 }
-
-void dbg_write_str(char_t const* str)
-{
-    serial_write(SERIAL_COM1_BASE, (u8_t const*)str, mem_first_zero_byte(str));
-}
-
-void dbg_write_msg(char_t const* str)
-{
-    serial_write(SERIAL_COM1_BASE, (u8_t const*)"[DEBUG] ", 8);
-    serial_write(SERIAL_COM1_BASE, (u8_t const*)str, mem_first_zero_byte(str));
-    serial_write(SERIAL_COM1_BASE, (u8_t const*)"\n", 1);
-}

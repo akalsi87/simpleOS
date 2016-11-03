@@ -8,7 +8,7 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
  */
 
 #include "assert.h"
-#include "drivers/serial.h"
+#include "debug.h"
 
 STATIC_ASSERT(sizeof(char_t) == 1, incorrect_type_size_char_t);
 STATIC_ASSERT(sizeof(i8_t)   == 1, incorrect_type_size_i8_t);
