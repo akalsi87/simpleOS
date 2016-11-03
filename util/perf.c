@@ -40,5 +40,11 @@ void perf_stop(char_t const* tag)
 		buf_print_dec_32(dec, sec);
 		dbg_write_str(dec);
 	}
-	dbg_write_str(" us.\n");
+	dbg_write_str(" us. (res: ");
+	{// print time
+		char_t dec[DEC_PRINT_CHARS_U32];
+		buf_print_dec_32(dec, 1000*1000/freq);
+		dbg_write_str(dec);
+	}
+	dbg_write_str(" us.)\n");
 }

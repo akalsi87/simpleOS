@@ -17,7 +17,7 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
 #include "util/assert.h"
 #include "util/perf.h"
 
-#define TIMER_FREQ 16384 /*Hz*/
+#define TIMER_FREQ 5000 /*Hz*/
 
 static
 void init()
