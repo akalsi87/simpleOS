@@ -22,7 +22,12 @@ CAT ?= cat
 MV  ?= mv
 ECHO ?= echo
 MKDIR ?= mkdir
-PRINTF ?= $(SHELL) -c ""
+
+#PRINTF ?= $(SHELL) -c ""
+PRINTF ?= printf
+
+RM ?= rm -f
+
 CP ?= cp
 GENISOIMAGE ?= genisoimage
 QEMU ?= qemu-system-i386
@@ -33,33 +38,36 @@ VER=0.0.1
 
 IMGFILE=simpleOS-$(VER).img
 
-export
+SRC_DIRS := cpu util boot drivers kernel
 
-.PHONY: emulate build-boot build-util build-drivers build-kernel
+C_SRC_FILES := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
+ASM_SRC_FILES := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.asm))
+
+C_OBJ_FILES := $(C_SRC_FILES:.c=.o)
+C_DEP_FILES := $(C_SRC_FILES:.c=.d)
+ASM_OBJ_FILES := $(ASM_SRC_FILES:.asm=.o)
+
+OBJS := $(C_OBJ_FILES) $(ASM_OBJ_FILES)
+
+.PHONY: emulate
 .SECONDARY: kernel.elf iso/boot/grub/menu.lst
 
 all : kernel.elf
 
-build-boot:
-	@$(MAKE) -C boot all
+-include $(C_DEP_FILES)
 
-build-cpu:
-	@$(MAKE) -C cpu all
+%.o: %.asm
+	@$(PRINTF) ' -- Assembling \033[1m$<\033[0m...\n'
+	$(NASM) -f elf32 -o $@ $^
 
-build-util:
-	@$(MAKE) -C util all
+%.o: %.c
+	@$(CC) $(CFLAGS) $(INCL) $(WARN) -c -MM -MF $(patsubst %.o,%.d,$@) $<
+	@$(PRINTF) ' -- Compiling  \033[1m$<\033[0m...\n'
+	$(CC) $(CFLAGS) $(INCL) $(WARN) -c $< -o $@
 
-build-drivers:
-	@$(MAKE) -C drivers all
-
-build-kernel:
-	@$(MAKE) -C kernel all
-
-kernel.elf: build-boot build-cpu build-util build-drivers build-kernel link.ld
-	$(eval objfiles_all=$$(shell find * | grep '\.o'))
-	$(eval objfiles=$$(filter-out boot/loader.o,$$(objfiles_all)))
+kernel.elf: ${OBJS}
 	@$(PRINTF) ' -- Linking    \033[1m$@\033[0m...\n'
-	$(LD) $(LDFLAGS) -T link.ld boot/loader.o $(objfiles) -o $@
+	$(LD) $(LDFLAGS) -T link.ld $(OBJS) -o $@
 
 iso/boot/grub/menu.lst: kernel.elf
 	@$(PRINTF) ' -- Preparing  \033[1miso/grub/\033[0m...\n'
@@ -77,11 +85,8 @@ $(IMGFILE): iso/boot/grub/menu.lst
 		-quiet -boot-info-table -o $@ iso
 
 clean:
-	@$(MAKE) -C boot clean
-	@$(MAKE) -C cpu clean
-	@$(MAKE) -C util clean
-	@$(MAKE) -C drivers clean
-	@$(MAKE) -C kernel clean
+	$(RM) $(OBJS)
+	$(RM) $(C_DEP_FILES)
 	$(RM) -r iso/
 	$(RM) *.elf
 	$(RM) $(IMGFILE)
