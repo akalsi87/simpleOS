@@ -11,7 +11,7 @@ CC   ?= cc
 LD   ?= ld
 GDB = /usr/local/i386elfgcc/bin/i386-elf-gdb
 
-OPTS += -O2 -g
+OPTS += -O3 -g
 WARN += -Wall -Wextra -Werror
 INCL += -I.
 CFLAGS += -fno-stack-protector -fno-builtin -nostdinc -nostdlib \
@@ -77,14 +77,6 @@ $(BUILD_DIR)/iso/boot/grub/menu.lst: $(KERNEL_ELF)
 	$(CP) boot/stage2_eltorito $(shell dirname $@)
 	$(CP) $^ $(BUILD_DIR)/iso/boot
 	$(PRINTF) "default=0\ntimeout=0\n\ntitle simpleOS\nkernel /boot/$(shell basename $^)" > $(shell dirname $@)/menu.lst
-
-# $(IMGFILE): iso/boot/grub/menu.lst
-# 	@$(PRINTF) 'Generating \033[1m$(IMGFILE)\033[0m...\n'
-# 	$(GENISOIMAGE) \
-# 		-R -b $(BUILD_DIR)/boot/grub/stage2_eltorito \
-# 		-no-emul-boot -boot-load-size 4 \
-# 		-A simpleOS -input-charset utf8 \
-# 		-quiet -boot-info-table -o $@ iso
 
 $(IMGFILE): $(BUILD_DIR)/iso/boot/grub/menu.lst
 	@$(PRINTF) 'Generating \033[1m$(IMGFILE)\033[0m...\n'

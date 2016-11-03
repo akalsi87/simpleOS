@@ -49,17 +49,17 @@ void cfg_buf(u16_t com)
     /*
      * Buffer config register layout:
      *
-     *	| 7 6 | 5  | 4 | 3   | 2   | 1   | 0 |
-     *	| lvl | bs | r | dma | clt | clr | e |
+     *    | 7 6 | 5  | 4 | 3   | 2   | 1   | 0 |
+     *    | lvl | bs | r | dma | clt | clr | e |
      *
      * Where:
-     *	+ lvl => Size of the buffer in bytes
-     *	+ bs => Enables 64 byte FIFO
-     *	+ r => Reserved for future use
-     *	+ dma => DMA mode selection
-     *	+ clt => Clear the transmission FIFO
-     *	+ clr => Clear the reception FIFO
-     *	+ e => Enables or disables the FIFO buffer
+     *    + lvl => Size of the buffer in bytes
+     *    + bs => Enables 64 byte FIFO
+     *    + r => Reserved for future use
+     *    + dma => DMA mode selection
+     *    + clt => Clear the transmission FIFO
+     *    + clr => Clear the reception FIFO
+     *    + e => Enables or disables the FIFO buffer
      *
      * The default value by convention, for now, will be
      * one which enables the FIFO, clears both buffers and
@@ -74,21 +74,21 @@ void cfg_modem(u16_t com)
     /*
      * Modem control register:
      *
-     *	| 7 | 6 | 5  | 4  | 3   | 2   | 1   | 0   |
-     *	| r | r | af | lb | ao2 | ao1 | rts | dtr |
+     *    | 7 | 6 | 5  | 4  | 3   | 2   | 1   | 0   |
+     *    | r | r | af | lb | ao2 | ao1 | rts | dtr |
      *
      * Where:
-     *	+ r => Reserved
-     *	+ af => Enables autoflow control (not used)
-     *	+ lb => Enables loopback mode. In loopback mode
-     *		the controller disconnects the receiver
-     *		serial input and redirects it to the
-     *		transmitter. Used for debugging
-     *	+ ao2 => Auxiliary output 2, used for receiving
-     *		interrupts
-     *	+ ao1 => Auxiliary output 1
-     *	+ rts => Ready to transmit (RTS) bit
-     *	+ dtr => Data terminal ready (DTR) bit
+     *    + r => Reserved
+     *    + af => Enables autoflow control (not used)
+     *    + lb => Enables loopback mode. In loopback mode
+     *        the controller disconnects the receiver
+     *        serial input and redirects it to the
+     *        transmitter. Used for debugging
+     *    + ao2 => Auxiliary output 2, used for receiving
+     *        interrupts
+     *    + ao1 => Auxiliary output 1
+     *    + rts => Ready to transmit (RTS) bit
+     *    + dtr => Data terminal ready (DTR) bit
      *
      * The default value to use will be 0x03
      */
@@ -116,6 +116,9 @@ void serial_write(u16_t com, u8_t const* b, sz_t n)
     while (b != e) {
         while (!is_tx_fifo_empty(com)) {
             // wait for data to be writable
+            for (u32_t i = 0; i < (1<<8); ++i) {
+                // simulate sleep
+            }
         }
         port_write_byte(com, *b++);
     }

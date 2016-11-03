@@ -22,26 +22,26 @@ void timer_cbk(registers_t const* r)
 {
     (void)r;
     ++count;
-    {// if printing
-//    	char_t tick[DEC_PRINT_CHARS_U32];
-//		dbg_write_str("[TIMER] ");
-//		buf_print_dec_32(tick, count);
-//		dbg_write_str(tick);
-//		dbg_write_str(" @ ");
-//		buf_print_dec_32(tick, frequency);
-//		dbg_write_str(tick);
-//		dbg_write_str("Hz\n");
-    }
+//    {// if printing
+//        char_t tick[DEC_PRINT_CHARS_U32];
+//        dbg_write_str("[TIMER] ");
+//        buf_print_dec_32(tick, count);
+//        dbg_write_str(tick);
+//        dbg_write_str(" @ ");
+//        buf_print_dec_32(tick, frequency);
+//        dbg_write_str(tick);
+//        dbg_write_str("Hz\n");
+//    }
 }
 
 u32_t timer_get_freq()
 {
-	return frequency;
+    return frequency;
 }
 
 u32_t timer_get_tick()
 {
-	return count;
+    return count;
 }
 
 void timer_init(u32_t freq)

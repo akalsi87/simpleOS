@@ -76,13 +76,13 @@ i32_t mem_compare(void const* a, void const* b, sz_t n)
 
 i32_t str_compare(char_t const* a, char_t const* b)
 {
-	while (*a && *b) {
-		if (*a != *b) {
-			break;
-		}
-		++a; ++b;
-	}
-	return *a - *b;
+    while (*a && *b) {
+        if (*a != *b) {
+            break;
+        }
+        ++a; ++b;
+    }
+    return *a - *b;
 }
 
 sz_t mem_first_zero_byte(void const* m)

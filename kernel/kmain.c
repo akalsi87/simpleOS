@@ -36,10 +36,10 @@ void kmain()
 
     fb_write_str("hello!, world!\n");
 
-//    __asm volatile ("int $0x3");
-//    __asm volatile ("int $0x4");
+    // __asm volatile ("int $0x3");
+    // __asm volatile ("int $0x4");
     while (1) {
-    	PERF_TIC(while_loop);
+        PERF_TIC(while_loop);
         for (u32_t i = 0; i < (1 << 20); ++i) {
             // do nothing, simulate delay
         }
