@@ -21,29 +21,28 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
 static
 void init()
 {
-    gdtinit();
-    idtinit();
-    irqinit();
-    serialinit();
-    timerinit(TIMER_FREQ);
-    fbinit();
+    gdt_init();
+    idt_init();
+    irq_init();
+    serial_init();
+    timer_init(TIMER_FREQ);
+    fb_init();
 }
 
 void kmain()
 {
     init();
 
-    fbsetpos(24, 78);
-    fbwritestr("hel\blo!\n");
-    fbwritestr("world!\n");
+    fb_set_pos(24, 78);
+    fb_write_str("hel\blo!\n");
+    fb_write_str("world!\n");
 
-    __asm volatile ("int $0x3");
-    __asm volatile ("int $0x4");
+//    __asm volatile ("int $0x3");
+//    __asm volatile ("int $0x4");
 
     while (1) {
         for (u32_t i = 0; i < (1 << 20); ++i) {
             // do nothing, simulate delay
         }
-        fbwritestr("hi serial port...");
     }
 }

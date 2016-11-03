@@ -28,43 +28,43 @@ static u8_t  fb_attr;
 #define FB_HEIGHT 25
 #define FB_MEM    ((u16_t*)0xB8000)
 
-void fbgetpos(u16_t* prow, u16_t* pcol)
+void fb_get_pos(u16_t* prow, u16_t* pcol)
 {
     *prow = fb_row;
     *pcol = fb_col;
 }
 
-void fbsetpos(u16_t row, u16_t col)
+void fb_set_pos(u16_t row, u16_t col)
 {
-    portwriteb(FB_COMMAND_PORT, FB_HIGH_BYTE_COMMAND);
-    portwriteb(FB_DATA_PORT, row);
-    portwriteb(FB_COMMAND_PORT, FB_LOW_BYTE_COMMAND);
-    portwriteb(FB_DATA_PORT, col);
+    port_write_byte(FB_COMMAND_PORT, FB_HIGH_BYTE_COMMAND);
+    port_write_byte(FB_DATA_PORT, row);
+    port_write_byte(FB_COMMAND_PORT, FB_LOW_BYTE_COMMAND);
+    port_write_byte(FB_DATA_PORT, col);
     fb_row = row;
     fb_col = col;
 }
 
-void fbcls()
+void fb_cls()
 {
     u16_t val = (((u16_t)0x0F) << 8) | ' ';
-    fillmemw(FB_MEM, val, FB_WIDTH*FB_HEIGHT);
+    mem_fill_word(FB_MEM, val, FB_WIDTH*FB_HEIGHT);
 }
 
-void fbinit()
+void fb_init()
 {
     fb_row = 0;
     fb_col = 0;
     fb_attr = 0x0F;
-    fbcls();
-    fbsetpos(0, 0);
+    fb_cls();
+    fb_set_pos(0, 0);
 }
 
-u8_t fbgetattr()
+u8_t fb_get_attr()
 {
     return fb_attr;
 }
 
-void fbsetattr(u8_t attr)
+void fb_set_attr(u8_t attr)
 {
     fb_attr = attr;
 }
@@ -77,9 +77,9 @@ void fbwritechar(char_t c)
         ++fb_row;
     }
     if (fb_row >= FB_HEIGHT) {
-        copymem(FB_MEM, FB_MEM + FB_WIDTH, (FB_HEIGHT-1)*FB_WIDTH*sizeof(u16_t));
+        mem_copy(FB_MEM, FB_MEM + FB_WIDTH, (FB_HEIGHT-1)*FB_WIDTH*sizeof(u16_t));
         u16_t word = (((u16_t)0x0F) << 8) | ' ';
-        fillmemw(FB_MEM+(FB_HEIGHT-1)*FB_WIDTH, word, FB_WIDTH);
+        mem_fill_word(FB_MEM+(FB_HEIGHT-1)*FB_WIDTH, word, FB_WIDTH);
         --fb_row;
     }
     u16_t val = (((u16_t)fb_attr) << 8) | c;
@@ -112,10 +112,10 @@ void fbwritechar(char_t c)
     }
 }
 
-void fbwritestr(const char_t* str)
+void fb_write_str(char_t const* str)
 {
     while (*str) {
         fbwritechar(*str++);
     }
-    fbsetpos(fb_row, fb_col);
+    fb_set_pos(fb_row, fb_col);
 }

@@ -31,7 +31,7 @@ void copymem_reverse(void* dest, void const* src, sz_t n)
     }
 }
 
-void copymem(void* dest, void const* src, sz_t n)
+void mem_copy(void* dest, void const* src, sz_t n)
 {
     if (n == 0) { return; }
     void const* src_end = ((char_t*)src + n);
@@ -39,7 +39,7 @@ void copymem(void* dest, void const* src, sz_t n)
                                             : copymem_forward(dest, src, n);
 }
 
-void fillmemb(void* dest, u8_t byte, sz_t n)
+void mem_fill_byte(void* dest, u8_t byte, sz_t n)
 {
     u8_t* d = (u8_t*)dest;
     u8_t* const e = d + n;
@@ -48,7 +48,7 @@ void fillmemb(void* dest, u8_t byte, sz_t n)
     }
 }
 
-void fillmemw(void* dest, u16_t word, sz_t n)
+void mem_fill_word(void* dest, u16_t word, sz_t n)
 {
     u16_t* d = (u16_t*)dest;
     u16_t* const e = d + n;
@@ -57,7 +57,7 @@ void fillmemw(void* dest, u16_t word, sz_t n)
     }
 }
 
-i32_t comparemem(void const* a, void const* b, sz_t n)
+i32_t mem_compare(void const* a, void const* b, sz_t n)
 {
     i8_t* left = (i8_t*)a;
     i8_t* right = (i8_t*)b;
@@ -74,7 +74,7 @@ i32_t comparemem(void const* a, void const* b, sz_t n)
     return res;
 }
 
-sz_t firstzerobyte(void const* m)
+sz_t mem_first_zero_byte(void const* m)
 {
     char_t const* str = (char_t const*)m;
     while (*str) {

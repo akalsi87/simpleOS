@@ -2,9 +2,9 @@
 ; gdtflush.asm
 ; --------------------------------------------------------------------------- ;
 
-global gdtflush         ; make it visible to C
+global gdt_flush        ; make it visible to C
 
-gdtflush:
+gdt_flush:
     mov eax, [esp+4]    ; Get the pointer to the GDT, passed as a parameter.
     lgdt [eax]          ; Load the new GDT pointer
 

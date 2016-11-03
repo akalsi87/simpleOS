@@ -13,9 +13,9 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
 #include "cpu/types.h"
 
 #define HEX_PRINT_CHARS 11
-void bufprinthex(char_t* buf, u32_t val);
+void buf_print_hex_32(char_t* buf, u32_t val);
 
 #define DEC_PRINT_CHARS_U32 11
-void bufprintdec(char_t* buf, u32_t val);
+void buf_print_dec_32(char_t* buf, u32_t val);
 
 #endif/*SIMPLEOS_UTIL_PRINT_H*/

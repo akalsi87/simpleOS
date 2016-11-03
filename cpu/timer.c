@@ -17,23 +17,23 @@ static u32_t count = 0;
 static u32_t frequency = 0;
 
 static
-void timercbk(const registers* r)
+void timer_cbk(registers_t const* r)
 {
     (void)r;
     char_t tick[DEC_PRINT_CHARS_U32];
     ++count;
-    debugwritestr("[TIMER] ");
-    bufprintdec(tick, count);
-    debugwritestr(tick);
-    debugwritestr(" @ ");
-    bufprintdec(tick, frequency);
-    debugwritestr(tick);
-    debugwritestr("Hz\n");
+    dbg_write_str("[TIMER] ");
+    buf_print_dec_32(tick, count);
+    dbg_write_str(tick);
+    dbg_write_str(" @ ");
+    buf_print_dec_32(tick, frequency);
+    dbg_write_str(tick);
+    dbg_write_str("Hz\n");
 }
 
-void timerinit(u32_t freq)
+void timer_init(u32_t freq)
 {
-    irqhandler(IRQ0, timercbk);
+    irq_set_handler(IRQ0, timer_cbk);
 
     frequency = freq;
     // The value we send to the PIT is the value to divide it's input clock
@@ -42,13 +42,13 @@ void timerinit(u32_t freq)
     u32_t divisor = 1193180 / frequency;
 
     // set frequency command
-    portwriteb(0x43, 0x36);
+    port_write_byte(0x43, 0x36);
 
     // Divisor has to be sent byte-wise, so split here into upper/lower bytes.
     u8_t l = (u8_t)(divisor & 0xFF);
     u8_t h = (u8_t)( (divisor>>8) & 0xFF );
 
     // Send the frequency divisor.
-    portwriteb(0x40, l);
-    portwriteb(0x40, h);
+    port_write_byte(0x40, l);
+    port_write_byte(0x40, h);
 }

@@ -2,15 +2,15 @@
 ; ports.asm
 ; --------------------------------------------------------------------------- ;
 
-global portreadb        ; 
-global portreadw        ;
-global portwriteb       ;
-global portwritew       ;
+global port_read_byte        ;
+global port_read_word        ;
+global port_write_byte       ;
+global port_write_word       ;
 
 ; stack:
 ;   [esp + 4] the I/O port
 ;   [esp] return address
-portreadb:
+port_read_byte:
     mov dx, [esp+4]
     in al, dx
     ret
@@ -18,7 +18,7 @@ portreadb:
 ; stack:
 ;   [esp + 4] the I/O port
 ;   [esp] return address
-portreadw:
+port_read_word:
     mov dx, [esp+4]
     in ax, dx
     ret
@@ -27,7 +27,7 @@ portreadw:
 ;   [esp + 8] the data byte
 ;   [esp + 4] the I/O port
 ;   [esp] return address
-portwriteb:
+port_write_byte:
     mov al, [esp+8]
     mov dx, [esp+4]
     out dx, al
@@ -37,7 +37,7 @@ portwriteb:
 ;   [esp + 8] the data byte
 ;   [esp + 4] the I/O port
 ;   [esp] return address
-portwritew:
+port_write_word:
     mov ax, [esp+8]
     mov dx, [esp+4]
     out dx, ax

@@ -22,10 +22,10 @@ STATIC_ASSERT(sizeof(u64_t)  == 8, incorrect_type_size_u64_t);
 
 i32_t panic(char_t const* e, char_t const* m)
 {
-    debugwritestr("[PANIC] ");
-    debugwritestr(e);
-    debugwritestr(" ");
-    debugwritestr(m);
-    debugwritestr("\n");
+    dbg_write_str("[PANIC] ");
+    dbg_write_str(e);
+    dbg_write_str(" ");
+    dbg_write_str(m);
+    dbg_write_str("\n");
     return 0;
 }

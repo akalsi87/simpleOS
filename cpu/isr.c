@@ -12,24 +12,24 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
 #include "drivers/serial.h"
 #include "util/print.h"
 
-static irq HANDLERS[256] = {0};
+static irq_t HANDLERS[256] = {0};
 
-irq irqhandler(u8_t n, irq h)
+irq_t irq_set_handler(u8_t n, irq_t h)
 {
-    irq t = HANDLERS[n];
+    irq_t t = HANDLERS[n];
     HANDLERS[n] = h;
     return t;
 }
 
-void irq_handler(const registers* r)
+void irq_handler(registers_t const* r)
 {
     u32_t int_no = r->int_no;
     if (int_no >= 40) {
         // alert slave
-        portwriteb(0xA0, 0x20);
+        port_write_byte(0xA0, 0x20);
     }
     // alert master
-    portwriteb(0x20, 0x20);
+    port_write_byte(0x20, 0x20);
 
     // debugwritestr("IRQ ");
     // char_t hex[HEX_PRINT_CHARS];
@@ -38,7 +38,7 @@ void irq_handler(const registers* r)
     // debugwritestr(" called!\n");
 
     {// run handler
-        irq h = HANDLERS[int_no];
+        irq_t h = HANDLERS[int_no];
         if (h) {
             h(r);
         }

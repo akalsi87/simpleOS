@@ -2,8 +2,8 @@
 ; irqinit.asm
 ; --------------------------------------------------------------------------- ;
 
-global irqinit
+global irq_init
 
-irqinit:
+irq_init:
     sti
     ret

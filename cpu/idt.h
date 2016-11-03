@@ -12,6 +12,6 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
 
 #include "types.h"
 
-void idtinit();
+void idt_init();
 
 #endif/*SIMPLEOS_CPU_IDT_H*/

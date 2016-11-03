@@ -12,6 +12,6 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
 
 #include "types.h"
 
-void timerinit(u32_t freq);
+void timer_init(u32_t freq);
 
 #endif/*SIMPLEOS_CPU_TIMER_H*/

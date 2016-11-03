@@ -87,16 +87,16 @@ typedef struct
 } idt_ptr;
 
 STATIC_ASSERT(sizeof(idt_entry) == 8, sizeof_idt_entry_must_be_8);
-STATIC_ASSERT(sizeof(idt_ptr) == 6, sizeof_gdt_ptr_must_be_6);
+STATIC_ASSERT(sizeof(idt_ptr) == 6, sizeof_idt_ptr_must_be_6);
 
-extern void idtflush(u32_t idtptraddr);
+void idt_flush(u32_t idtptraddr);
 
 static const u16_t KERNEL_CS = 0x08;
 static idt_entry IDT[256];
 static idt_ptr PTR;
 
 static
-void setgate(i32_t n, u32_t handler)
+void set_gate(i32_t n, u32_t handler)
 {
     IDT[n].low_off = ((handler) & 0xFFFF);
     IDT[n].sel = KERNEL_CS;
@@ -105,77 +105,77 @@ void setgate(i32_t n, u32_t handler)
     IDT[n].high_off = ((handler >> 16) & 0xFFFF);
 }
 
-void idtinit()
+void idt_init()
 {
     u32_t* idt_addr = (u32_t*)(&PTR.baselo);
     *idt_addr = (u32_t)(voidp_t)(&IDT);
     PTR.limit = sizeof(IDT)-1;
 
-    setgate(0, (u32_t)isr0);
-    setgate(1, (u32_t)isr1);
-    setgate(2, (u32_t)isr2);
-    setgate(3, (u32_t)isr3);
-    setgate(4, (u32_t)isr4);
-    setgate(5, (u32_t)isr5);
-    setgate(6, (u32_t)isr6);
-    setgate(7, (u32_t)isr7);
-    setgate(8, (u32_t)isr8);
-    setgate(9, (u32_t)isr9);
-    setgate(10, (u32_t)isr10);
-    setgate(11, (u32_t)isr11);
-    setgate(12, (u32_t)isr12);
-    setgate(13, (u32_t)isr13);
-    setgate(14, (u32_t)isr14);
-    setgate(15, (u32_t)isr15);
-    setgate(16, (u32_t)isr16);
-    setgate(17, (u32_t)isr17);
-    setgate(18, (u32_t)isr18);
-    setgate(19, (u32_t)isr19);
-    setgate(20, (u32_t)isr20);
-    setgate(21, (u32_t)isr21);
-    setgate(22, (u32_t)isr22);
-    setgate(23, (u32_t)isr23);
-    setgate(24, (u32_t)isr24);
-    setgate(25, (u32_t)isr25);
-    setgate(26, (u32_t)isr26);
-    setgate(27, (u32_t)isr27);
-    setgate(28, (u32_t)isr28);
-    setgate(29, (u32_t)isr29);
-    setgate(30, (u32_t)isr30);
-    setgate(31, (u32_t)isr31);
+    set_gate(0, (u32_t)isr0);
+    set_gate(1, (u32_t)isr1);
+    set_gate(2, (u32_t)isr2);
+    set_gate(3, (u32_t)isr3);
+    set_gate(4, (u32_t)isr4);
+    set_gate(5, (u32_t)isr5);
+    set_gate(6, (u32_t)isr6);
+    set_gate(7, (u32_t)isr7);
+    set_gate(8, (u32_t)isr8);
+    set_gate(9, (u32_t)isr9);
+    set_gate(10, (u32_t)isr10);
+    set_gate(11, (u32_t)isr11);
+    set_gate(12, (u32_t)isr12);
+    set_gate(13, (u32_t)isr13);
+    set_gate(14, (u32_t)isr14);
+    set_gate(15, (u32_t)isr15);
+    set_gate(16, (u32_t)isr16);
+    set_gate(17, (u32_t)isr17);
+    set_gate(18, (u32_t)isr18);
+    set_gate(19, (u32_t)isr19);
+    set_gate(20, (u32_t)isr20);
+    set_gate(21, (u32_t)isr21);
+    set_gate(22, (u32_t)isr22);
+    set_gate(23, (u32_t)isr23);
+    set_gate(24, (u32_t)isr24);
+    set_gate(25, (u32_t)isr25);
+    set_gate(26, (u32_t)isr26);
+    set_gate(27, (u32_t)isr27);
+    set_gate(28, (u32_t)isr28);
+    set_gate(29, (u32_t)isr29);
+    set_gate(30, (u32_t)isr30);
+    set_gate(31, (u32_t)isr31);
 
     // Remap the PIC
     // details: http://wiki.osdev.org/PIC
-    portwriteb(0x20, 0x11);
-    portwriteb(0xA0, 0x11);
-    portwriteb(0x21, 0x20);
-    portwriteb(0xA1, 0x28);
-    portwriteb(0x21, 0x04);
-    portwriteb(0xA1, 0x02);
-    portwriteb(0x21, 0x01);
-    portwriteb(0xA1, 0x01);
-    portwriteb(0x21, 0x0);
-    portwriteb(0xA1, 0x0); 
+    port_write_byte(0x20, 0x11);
+    port_write_byte(0xA0, 0x11);
+    port_write_byte(0x21, 0x20);
+    port_write_byte(0xA1, 0x28);
+    port_write_byte(0x21, 0x04);
+    port_write_byte(0xA1, 0x02);
+    port_write_byte(0x21, 0x01);
+    port_write_byte(0xA1, 0x01);
+    port_write_byte(0x21, 0x0);
+    port_write_byte(0xA1, 0x0); 
 
     // Install the IRQs
-    setgate(32, (u32_t)irq0);
-    setgate(33, (u32_t)irq1);
-    setgate(34, (u32_t)irq2);
-    setgate(35, (u32_t)irq3);
-    setgate(36, (u32_t)irq4);
-    setgate(37, (u32_t)irq5);
-    setgate(38, (u32_t)irq6);
-    setgate(39, (u32_t)irq7);
-    setgate(40, (u32_t)irq8);
-    setgate(41, (u32_t)irq9);
-    setgate(42, (u32_t)irq10);
-    setgate(43, (u32_t)irq11);
-    setgate(44, (u32_t)irq12);
-    setgate(45, (u32_t)irq13);
-    setgate(46, (u32_t)irq14);
-    setgate(47, (u32_t)irq15);
+    set_gate(32, (u32_t)irq0);
+    set_gate(33, (u32_t)irq1);
+    set_gate(34, (u32_t)irq2);
+    set_gate(35, (u32_t)irq3);
+    set_gate(36, (u32_t)irq4);
+    set_gate(37, (u32_t)irq5);
+    set_gate(38, (u32_t)irq6);
+    set_gate(39, (u32_t)irq7);
+    set_gate(40, (u32_t)irq8);
+    set_gate(41, (u32_t)irq9);
+    set_gate(42, (u32_t)irq10);
+    set_gate(43, (u32_t)irq11);
+    set_gate(44, (u32_t)irq12);
+    set_gate(45, (u32_t)irq13);
+    set_gate(46, (u32_t)irq14);
+    set_gate(47, (u32_t)irq15);
 
-    idtflush((u32_t)&PTR); // Load with ASM
+    idt_flush((u32_t)&PTR); // Load with ASM
 }
 
 char_t * EXCEPTIONS[] = {
@@ -216,13 +216,13 @@ char_t * EXCEPTIONS[] = {
     "Reserved"
 };
 
-void isr_handler(const registers* r)
+void isr_handler(registers_t const* r)
 {
-    debugwritestr("[ISR ");
+    dbg_write_str("[ISR ");
     char_t dec[DEC_PRINT_CHARS_U32];
-    bufprintdec(dec, r->int_no);
-    debugwritestr(dec);
-    debugwritestr("] ");
-    debugwritestr(EXCEPTIONS[r->int_no]);
-    debugwritestr("\n");
+    buf_print_dec_32(dec, r->int_no);
+    dbg_write_str(dec);
+    dbg_write_str("] ");
+    dbg_write_str(EXCEPTIONS[r->int_no]);
+    dbg_write_str("\n");
 }

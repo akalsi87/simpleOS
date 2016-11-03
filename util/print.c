@@ -10,7 +10,7 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
 #include "print.h"
 
 static
-void reversestring(char_t* buf, sz_t sz)
+void reverse_string(char_t* buf, sz_t sz)
 {
     const sz_t half = sz >> 1;
     const sz_t last = sz - 1;
@@ -28,14 +28,8 @@ static const char_t HEX_CHARS[] = {
     'c', 'd', 'e', 'f'
 };
 
-static const char_t DEC_CHARS[] = {
-    '0', '1', '2', '3',
-    '4', '5', '6', '7',
-    '8', '9'
-};
-
 static
-void printhex(char_t* buf, u32_t val, u32_t maxchars)
+void print_hex(char_t* buf, u32_t val, u32_t maxchars)
 {
     char_t* const start = buf;
     do {
@@ -50,26 +44,26 @@ void printhex(char_t* buf, u32_t val, u32_t maxchars)
     *buf++ = 'x';
     *buf++ = '0';
     maxchars = (buf-start);
-    reversestring(start, maxchars);
+    reverse_string(start, maxchars);
     start[maxchars] = '\0';
 }
 
-void bufprinthex(char_t* buf, u32_t val)
+void buf_print_hex_32(char_t* buf, u32_t val)
 {
     // -2 for 0x and -1 for '\0'
-    printhex(buf, val, HEX_PRINT_CHARS-2-1);
+    print_hex(buf, val, HEX_PRINT_CHARS-2-1);
 }
 
-void bufprintdec(char_t* buf, u32_t val)
+void buf_print_dec_32(char_t* buf, u32_t val)
 {
     char_t* const start = buf;
     sz_t len;
     do {
         u32_t idx = val % 10;
-        *buf++ = DEC_CHARS[idx];
+        *buf++ = HEX_CHARS[idx];
         val = val / 10;
     } while (val != 0);
     len = (buf-start);
-    reversestring(start, len);
+    reverse_string(start, len);
     start[len] = '\0';
 }
