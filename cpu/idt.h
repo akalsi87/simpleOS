@@ -14,4 +14,8 @@ Copyright (c) 2016 Aaditya Kalsi - All Rights Reserved.
 
 void idt_init();
 
+void interrupt_enable();
+
+void interrupt_disable();
+
 #endif/*SIMPLEOS_CPU_IDT_H*/

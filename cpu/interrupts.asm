@@ -4,6 +4,17 @@
 [extern isr_handler]
 [extern irq_handler]
 
+global interrupt_enable
+global interrupt_disable
+
+interrupt_enable:
+    cli
+    ret
+
+interrupt_disable:
+    sti
+    ret
+
 ; Common ISR code
 isr_common_stub:
     ; 1. Save CPU state
